@@ -35,7 +35,26 @@ function mouseMoved( event ) {
 }
 
 function drawRectangle(x,y) {
+    const rect = Object.create(Rectangle);
+    rect.create(x,y);
+    rect.draw();
+}
+
+const Rectangle = {
+   x: 10,
+   y: 10,
+   w: 10,
+   h: 10,
+   
+   create( x,y, w=10,h=10) {
+    this.x=x;
+    this.y=y;
+    this.w=w;
+    this.h=h;
+   },
+
+   draw() {
     ctx.strokeStyle = "rgba(0,255,0,.5)";
-    ctx.strokeRect(x,y,10,10);
-    ctx.stroke()
+    ctx.strokeRect(this.x,this.y,this.w,this.h);
+   }
 }
