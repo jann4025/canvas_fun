@@ -1,17 +1,28 @@
 "use strict";
 window.addEventListener("DOMContentLoaded", init );
 
-const globals = {};
+let ctx;
+const width = 500;
+const height = 500;
 
 function init() {
-    const ctx = document.querySelector("#canvas").getContext("2d");
-    globals.ctx = ctx;
+    ctx = document.querySelector("#canvas").getContext("2d");
 
     registerMouseMovement();
+
+    prepareCanvas();
 }
 
 function registerMouseMovement() {
     document.querySelector("#canvas").addEventListener("mousemove", mouseMoved);
+}
+
+function prepareCanvas() {
+    ctx.canvas.height = height;
+    ctx.canvas.width = width;
+
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0,0,width,height)
 }
 
 function mouseMoved( event ) {
@@ -21,12 +32,10 @@ function mouseMoved( event ) {
     console.log("mouse moved");
 
     drawRectangle(mouseX, mouseY);
-
 }
 
 function drawRectangle(x,y) {
-    globals.ctx.strokeStyle = "lawngreen";
-    globals.ctx.strokeRect(x,y,10,10);
-
-    globals.ctx.stroke()
+    ctx.strokeStyle = "rgba(0,255,0,.5)";
+    ctx.strokeRect(x,y,10,10);
+    ctx.stroke()
 }
