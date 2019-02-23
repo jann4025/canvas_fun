@@ -13,6 +13,9 @@ function init() {
     registerMouseMovement();
 
     prepareCanvas();
+
+    // start animation-loop
+    animate();
 }
 
 function registerMouseMovement() {
@@ -34,8 +37,6 @@ function mouseMoved( event ) {
     console.log("mouse moved");
 
     createRectangleAt(mouseX, mouseY);
-
-    drawEverything();
 }
 
 function createRectangleAt(x,y) {
@@ -47,10 +48,28 @@ function createRectangleAt(x,y) {
     rectangles.push( rect );
 
     // if more than 20 rectangles exist - remove the first one!
-    if( rectangles.length > 20 ) {
+    // Don't do this anymore - let the rectangles remove themselves
+ /*   if( rectangles.length > 20 ) {
         rectangles.shift();
     }
+    */
 }
+
+let last;
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    let now = Date.now() / 1000;
+    let delta = now - (last || now);
+    last = now;
+
+    rectangles.forEach( rect => rect.animate( delta ) );
+
+    // TODO: Maybe only redraw everything, if it has changed?
+    drawEverything();
+}
+
 
 function drawEverything() {
     // clear the canvas
@@ -67,6 +86,8 @@ const Rectangle = {
    y: 10,
    w: 10,
    h: 10,
+   a: 1,
+   fadeSpeed: 1,
    
    create( x,y, w=10,h=10) {
     this.x=x;
@@ -75,8 +96,27 @@ const Rectangle = {
     this.h=h;
    },
 
+   // animate this rectangle - fade towards opacity 0, when reached, remove
+   animate( delta ) {
+     // modify a with fadeSpeed
+     this.a -= this.fadeSpeed * delta;
+
+     if( this.a < 0 ) {
+         this.a = 0;
+         this.remove();
+     }
+   },
+
    draw() {
-    ctx.strokeStyle = "rgba(0,255,0,.5)";
+    ctx.strokeStyle = `rgba(0,255,0,${this.a})`;
     ctx.strokeRect(this.x,this.y,this.w,this.h);
+   },
+
+   // remove this rectangle from the rectangles array
+   remove() {
+       const idx = rectangles.indexOf( this );
+       rectangles.splice(idx,1);
    }
+
+
 }
