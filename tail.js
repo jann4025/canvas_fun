@@ -5,6 +5,8 @@ let ctx;
 const width = 500;
 const height = 500;
 
+const rectangles = [];
+
 function init() {
     ctx = document.querySelector("#canvas").getContext("2d");
 
@@ -31,14 +33,34 @@ function mouseMoved( event ) {
 
     console.log("mouse moved");
 
-    drawRectangle(mouseX, mouseY);
+    createRectangleAt(mouseX, mouseY);
+
+    drawEverything();
 }
 
-function drawRectangle(x,y) {
+function createRectangleAt(x,y) {
+    // Create a rectangle object at this x,y position
     const rect = Object.create(Rectangle);
     rect.create(x,y);
-    rect.draw();
+    
+    // add it to the list of all rectangles
+    rectangles.push( rect );
+
+    // if more than 20 rectangles exist - remove the first one!
+    if( rectangles.length > 20 ) {
+        rectangles.shift();
+    }
 }
+
+function drawEverything() {
+    // clear the canvas
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0,0,width,height);
+
+    // draw all the rectangles
+    rectangles.forEach( rect => rect.draw() );
+}
+
 
 const Rectangle = {
    x: 10,
